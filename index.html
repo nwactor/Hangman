@@ -64,19 +64,28 @@
 		startUp();
 
 		document.onkeyup = function(event) {
-			var guess = event.keyIndex;
-			//if index between a-z 's indexes
+			var guess = event.keyCode;
+			//if index between a-z 's codes
+			if(guess <= 90 && guess >= 65) {
 				//if key has not been guessed already
+				if(!guessedLetters.includes(event.key)) {
 					//check if it's part of the word
-						//if true
-							//add to answer
-							//check for win
-						//if false
-							//draw next step of picture
-							//decrement guessesRemaining
-							//check for lose
-						//put letter in already guessed
-						updateState();
+					if(word.includes(event.key)) {
+						//add to answer
+						updateProgress();
+						//check for win
+						checkWin();
+					} else {
+						//decrement guessesRemaining
+						guessesRemaining--;
+						//check for lose
+						checkLoss();
+					}
+					//put letter in already guessed
+					guessedLetters.push(event.key);
+					updateState();
+				}
+			}
 		}
 
 		//check if the player is out of guesses,
@@ -92,7 +101,7 @@
 		//check if the player has completed the word,
 		//and display winning message if so
 		function checkWin() {
-			var win = guessProgress.every(function(letter) {
+			var win = progress.every(function(letter) {
 				return (letter != '_');
 			});
 			if(win) {
@@ -107,22 +116,23 @@
 			document.getElementById('guessesRemaining').innerHTML = guessesRemaining;
 			document.getElementById('guessedLetters').innerHTML = arrayToString(guessedLetters); 
 			document.getElementById('progress').innerHTML = arrayToString(progress);
+			//update hangman
 			if(guessesRemaining < 8) {
 				document.getElementById('head').style.visibility = "visible";
-			} else if(guessesRemaining < 7) {
+			} if(guessesRemaining < 7) {
 				document.getElementById('upperTorso').style.visibility = "visible";
 				document.getElementById('lowerTorso').style.visibility = "visible";
-			} else if(guessesRemaining < 6) {
+			} if(guessesRemaining < 6) {
 				document.getElementById('leftArm').style.visibility = "visible";
-			} else if(guessesRemaining < 5) {
+			} if(guessesRemaining < 5) {
 				document.getElementById('rightArm').style.visibility = "visible";
-			} else if(guessesRemaining < 4) {
+			} if(guessesRemaining < 4) {
 				document.getElementById('uLeftLeg').style.visibility = "visible";
-			} else if(guessesRemaining < 3) {
+			} if(guessesRemaining < 3) {
 				document.getElementById('lLeftLeg').style.visibility = "visible";
-			} else if(guessesRemaining < 2) {
+			} if(guessesRemaining < 2) {
 				document.getElementById('uRightLeg').style.visibility = "visible";
-			} else if(guessesRemaining < 1) {
+			} if(guessesRemaining < 1) {
 				document.getElementById('lRightLeg').style.visibility = "visible";
 			}
 		}
@@ -130,7 +140,7 @@
 		//update the progress array
 		function updateProgress() {
 			for(var i = 0; i < progress.length; i++) {
-				if(gussedLetters.contains(word.charAt(i))) {
+				if(guessedLetters.includes(word.charAt(i))) {
 					progress[i] = word.charAt(i);
 				}
 			}

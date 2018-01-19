@@ -45,7 +45,7 @@ label {
 }
 
 .bodyPart {
-	/*visibility: hidden;*/
+	visibility: hidden;
 	font-size: 40px;
 	display: inline;
 	color: black;
@@ -81,4 +81,5 @@ label {
 	border-color: green;
 	text-align: center;
 	min-height: 30px;
+	width: 300px; 
 }
