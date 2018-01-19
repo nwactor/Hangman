@@ -2,33 +2,63 @@
 <html>
 <head>
 	<title>Hangman!</title>
-	
+	<link rel="stylesheet" type="text/css" href="./assets/css/reset.css">
 	<link rel="stylesheet" type="text/css" href="./assets/css/style.css">
 </head>
 <body>
 
-	<h1>Press any key to get started!</h1>
+	<h1>Classic Hangman</h1>
+	<h2>Press any key to get started!</h2>
 
 	<div class="container">
-		<p id="guessedLetters"></p>
-		<p id="guessesRemaining"></p>
 
-		<div>
-			<div id="head" class="bodyPart">O</div>
-			<div id="leftArm" class="bodyPart">--</div>
-			<div id="torso" class="bodyPart">||</div>
-			<div id="rightArm" class="bodyPart">--</div>
-			<div id="leftLeg" class="bodyPart">/</div>
-			<div id="rightLeg" class="bodyPart">\</div>
+		<p id="progress"></p>
+
+		<div class="gallow" style="width: 250px; height: 25px;"></div>
+
+		<div class="container float-left">
+			<div>
+				<p id="head" class="bodyPart">O</p>
+			</div>
+			<div>
+				<p id="leftArm" class="bodyPart">----</p>
+				<p id="upperTorso" class="bodyPart">||</p>
+				<p id="rightArm" class="bodyPart">----</p>
+			</div>
+			<div>
+				<p id="lowerTorso" class="bodyPart">||</p>
+			</div>
+			<div>
+				<p id="uLeftLeg" class="bodyPart">/</p>
+				<p id="uRightLeg" class="bodyPart">\</p>
+			</div>
+			<div>
+				<p id="lLeftLeg" class="bodyPart">/</p>
+				<p id="lRightLeg" class="bodyPart">\</p>
+			</div>
 		</div>
-	</div>
+		
+		<div class="gallow float-left" style="width: 30px; height: 300px"></div>
 
-	
+		<div class="container info-container float-right">
+			<label>Guessed Letters: </label>
+			<div class="fieldBox">
+				<p id="guessedLetters"></p>
+			</div>
+			<label>Guesses Remaining: </label>
+			<div class="fieldBox">
+				<p id="guessesRemaining"></p>
+			</div>
+		</div>
+
+		<div class="gallow" style="width: 300px; height: 30px; margin-top: 300px"></div>
+
+	</div>
 
 	<script type="text/javascript">
 		var word = ""
 		var progress = [];
-		var gussedLetters = [];
+		var guessedLetters = [];
 		var guessesRemaining;
 
 		startUp();
@@ -75,28 +105,53 @@
 		//updates the html with the current stte of the game
 		function updateState() {
 			document.getElementById('guessesRemaining').innerHTML = guessesRemaining;
-			//guessed letters
-			//progress
-			//hangman
+			document.getElementById('guessedLetters').innerHTML = arrayToString(guessedLetters); 
+			document.getElementById('progress').innerHTML = arrayToString(progress);
+			if(guessesRemaining < 8) {
+				document.getElementById('head').style.visibility = "visible";
+			} else if(guessesRemaining < 7) {
+				document.getElementById('upperTorso').style.visibility = "visible";
+				document.getElementById('lowerTorso').style.visibility = "visible";
+			} else if(guessesRemaining < 6) {
+				document.getElementById('leftArm').style.visibility = "visible";
+			} else if(guessesRemaining < 5) {
+				document.getElementById('rightArm').style.visibility = "visible";
+			} else if(guessesRemaining < 4) {
+				document.getElementById('uLeftLeg').style.visibility = "visible";
+			} else if(guessesRemaining < 3) {
+				document.getElementById('lLeftLeg').style.visibility = "visible";
+			} else if(guessesRemaining < 2) {
+				document.getElementById('uRightLeg').style.visibility = "visible";
+			} else if(guessesRemaining < 1) {
+				document.getElementById('lRightLeg').style.visibility = "visible";
+			}
 		}
 
 		//update the progress array
 		function updateProgress() {
-			for(int i = 0; i < progress.length; i++) {
+			for(var i = 0; i < progress.length; i++) {
 				if(gussedLetters.contains(word.charAt(i))) {
 					progress[i] = word.charAt(i);
 				}
 			}
 		}
 
+		function arrayToString(array) {
+			var stringArray = '';
+			for(var i = 0; i < array.length; i++) {
+				stringArray += array[i] + ' ';
+			}
+			return stringArray;
+		}
+
 		//sets initial values
 		function startUp() {
 			//get a random word
 			word = "placeholder";
-			for(int i = 0; i < word.length; i++) {
+			for(var i = 0; i < word.length; i++) {
 				progress[i] = '_';
 			}
-			guessesRemaining = 6;
+			guessesRemaining = 8;
 
 			updateState();
 		}
