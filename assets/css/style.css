@@ -83,3 +83,17 @@ label {
 	min-height: 30px;
 	width: 300px; 
 }
+
+#endGameBanner {
+	float: left;
+	border-style: dashed;
+	border-width: 3px;
+	border-color: #0ff;
+	visibility: hidden;
+	padding: 150px 50px 150px 50px;
+	max-width: 300px;
+	margin: -20px 20px 0px 125px;
+	text-align: center;	
+	font-size: 18pt;
+	font-weight: bold;
+}

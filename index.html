@@ -40,6 +40,8 @@
 		
 		<div class="gallow float-left" style="width: 30px; height: 300px"></div>
 
+		<h3 id="endGameBanner"></h3>
+
 		<div class="container info-container float-right">
 			<label>Guessed Letters: </label>
 			<div class="fieldBox">
@@ -60,17 +62,23 @@
 		var progress = [];
 		var guessedLetters = [];
 		var guessesRemaining;
+		var wordBank = [
+			"palace", "whisper", "notebook", "whiteboard", "hangman",  "calendar",  "tiger",  "galaxy",  "paintbrush",  "cherry",  "imposter",  "banana",  "whelk",  "employee",  "student",  "teacher",  "pupil",  "bench",  "house",  "classroom",  "photograph",  "dolphin",  "mountain",  "ocean",  "desert",  "bread",  "pheonix",  "trombone",  "railway",  "journey",  "poster",  "penguin",  "planet",  "neutron",  "electron",  "water",  "horse",  "jaguar",  "asteroid",  "downfall",  "blubber",  "crimson",  "viridian",  "cerulean", "magenta",  "police",  "president",  "future",  "zombie",  "explosion",  "peace",  "gratitude",  "wonder",  "thunderstorm"
+		];
 
 		startUp();
 
 		document.onkeyup = function(event) {
-			var guess = event.keyCode;
+			var guess = event.key.toLowerCase();
+			var guessCode = event.keyCode;
 			//if index between a-z 's codes
-			if(guess <= 90 && guess >= 65) {
+			if(guessCode <= 90 && guessCode >= 65) {
 				//if key has not been guessed already
-				if(!guessedLetters.includes(event.key)) {
+				if(!guessedLetters.includes(guess)) {
+					//put letter in already guessed
+					guessedLetters.push(guess);
 					//check if it's part of the word
-					if(word.includes(event.key)) {
+					if(word.includes(guess)) {
 						//add to answer
 						updateProgress();
 						//check for win
@@ -81,9 +89,16 @@
 						//check for lose
 						checkLoss();
 					}
-					//put letter in already guessed
-					guessedLetters.push(event.key);
 					updateState();
+				}
+			}
+		}
+
+		//update the progress array
+		function updateProgress() {
+			for(var i = 0; i < progress.length; i++) {
+				if(guessedLetters.includes(word.charAt(i))) {
+					progress[i] = word.charAt(i);
 				}
 			}
 		}
@@ -93,7 +108,11 @@
 		function checkLoss() {
 			if(guessesRemaining === 0) {
 				//display message
-
+				var banner = document.getElementById('endGameBanner');
+				banner.style.backgroundColor = 'gray';
+				banner.innerHTML = '<h3>Hanged! Word was ' + word + '. Refresh to restart.<h3>';
+				banner.style.visibility = 'visible';
+				//stop game
 				document.onkeyup = null;
 			}
 		}
@@ -106,7 +125,11 @@
 			});
 			if(win) {
 				//display message
-
+				var banner = document.getElementById('endGameBanner');
+				banner.style.backgroundColor = 'orange';
+				banner.innerHTML = '<h3>You Win! Word was ' + word + '. Refresh to restart.<h3>';
+				banner.style.visibility = 'visible';
+				//stop game
 				document.onkeyup = null;
 			}
 		}
@@ -117,10 +140,11 @@
 			document.getElementById('guessedLetters').innerHTML = arrayToString(guessedLetters); 
 			document.getElementById('progress').innerHTML = arrayToString(progress);
 			//update hangman
-			if(guessesRemaining < 8) {
+			if(guessesRemaining < 9) {
 				document.getElementById('head').style.visibility = "visible";
 			} if(guessesRemaining < 7) {
 				document.getElementById('upperTorso').style.visibility = "visible";
+			} if(guessesRemaining < 7) {
 				document.getElementById('lowerTorso').style.visibility = "visible";
 			} if(guessesRemaining < 6) {
 				document.getElementById('leftArm').style.visibility = "visible";
@@ -137,15 +161,6 @@
 			}
 		}
 
-		//update the progress array
-		function updateProgress() {
-			for(var i = 0; i < progress.length; i++) {
-				if(guessedLetters.includes(word.charAt(i))) {
-					progress[i] = word.charAt(i);
-				}
-			}
-		}
-
 		function arrayToString(array) {
 			var stringArray = '';
 			for(var i = 0; i < array.length; i++) {
@@ -154,15 +169,19 @@
 			return stringArray;
 		}
 
+		//gets a random word from the wordbank
+		function getRandomWord() {
+			return wordBank[Math.floor(Math.random() * wordBank.length)];
+		}
+
 		//sets initial values
 		function startUp() {
 			//get a random word
-			word = "placeholder";
+			word = getRandomWord();
 			for(var i = 0; i < word.length; i++) {
 				progress[i] = '_';
 			}
-			guessesRemaining = 8;
-
+			guessesRemaining = 9;
 			updateState();
 		}
 
