@@ -51,6 +51,10 @@
 			<div class="fieldBox">
 				<p id="guessesRemaining"></p>
 			</div>
+			<label>Wins: </label>
+			<div class="fieldBox">
+				<p id="wins">0</p>
+			</div>
 		</div>
 
 		<div class="gallow" style="width: 300px; height: 30px; margin-top: 300px"></div>
@@ -58,6 +62,7 @@
 	</div>
 
 	<script type="text/javascript">
+		var wins = 0;
 		var word = ""
 		var progress = [];
 		var guessedLetters = [];
@@ -69,6 +74,8 @@
 		startUp();
 
 		document.onkeyup = function(event) {
+			//hide end-game banner on next key press
+			document.getElementById('endGameBanner').style.visibility = 'hidden';
 			var guess = event.key.toLowerCase();
 			var guessCode = event.keyCode;
 			//if index between a-z 's codes
@@ -110,10 +117,10 @@
 				//display message
 				var banner = document.getElementById('endGameBanner');
 				banner.style.backgroundColor = 'gray';
-				banner.innerHTML = '<h3>Hanged! Word was ' + word + '. Refresh to restart.<h3>';
+				banner.innerHTML = '<h3>Hanged! Word was ' + word + '. Keep typing to try the next word.<h3>';
 				banner.style.visibility = 'visible';
-				//stop game
-				document.onkeyup = null;
+				//restart game
+				startUp();
 			}
 		}
 
@@ -127,10 +134,12 @@
 				//display message
 				var banner = document.getElementById('endGameBanner');
 				banner.style.backgroundColor = 'orange';
-				banner.innerHTML = '<h3>You Win! Word was ' + word + '. Refresh to restart.<h3>';
+				banner.innerHTML = '<h3>You Win! Word was ' + word + '. Keep typing to try the next word.<h3>';
 				banner.style.visibility = 'visible';
-				//stop game
-				document.onkeyup = null;
+				wins++;
+				document.getElementById('wins').innerHTML = wins;
+				//restart game
+				startUp();
 			}
 		}
 
@@ -176,11 +185,21 @@
 
 		//sets initial values
 		function startUp() {
+			//hide hangman
+			var hangman = document.getElementsByClassName('bodyPart');
+			for(var i = 0; i < hangman.length; i++) {
+				hangman[i].style.visibility = 'hidden';
+			}
+			//clear guessed letters
+			guessedLetters = [];
+			//clear progress
+			progress = [];
 			//get a random word
 			word = getRandomWord();
 			for(var i = 0; i < word.length; i++) {
 				progress[i] = '_';
 			}
+			//reset guesses
 			guessesRemaining = 9;
 			updateState();
 		}
